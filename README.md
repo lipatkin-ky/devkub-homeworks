@@ -8,6 +8,6 @@
 
 11.4. [Микросервисы: масштабирование](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/11-microservices-04-scaling.md)
 
-## Администрирование кластера Kubernetes ##
+## Модуль 12. Администрирование кластера Kubernetes
 
 12.1. [Компоненты Kubernetes] (https://github.com/lipatkin-ky/devkub-homeworks/blob/main/12-xxx.md)
