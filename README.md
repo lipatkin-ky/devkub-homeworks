@@ -10,4 +10,4 @@
 
 ## Модуль 12. Администрирование кластера Kubernetes
 
-12.1. [Компоненты Kubernetes] (https://github.com/lipatkin-ky/devkub-homeworks/blob/main/12-kubernetes-01-intro.md)
+12.1. [Компоненты Kubernetes](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/12-kubernetes-01-intro.md)
