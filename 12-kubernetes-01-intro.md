@@ -2,6 +2,8 @@
 
 Вы DevOps инженер в крупной компании с большим парком сервисов. Ваша задача — разворачивать эти продукты в корпоративном кластере. 
 
+---
+---
 ## Задача 1: Установить Minikube
 
 Для экспериментов и валидации ваших решений вам нужно подготовить тестовую среду для работы с Kubernetes. Оптимальное решение — развернуть на рабочей машине Minikube.
@@ -30,6 +32,38 @@
 
 **Важно**: t3.small не входит во free tier, следите за бюджетом аккаунта и удаляйте виртуалку.
 
+---
+```
+root@k8s:~# minikube version
+minikube version: v1.25.2
+commit: 362d5fdc0a3dbee389b3d3f1034e8023e72bd3a7
+```
+
+```
+root@k8s:~# minikube status
+minikube
+type: Control Plane
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+```
+
+```
+root@k8s:~# kubectl get pods --namespace=kube-system
+NAME                          READY   STATUS    RESTARTS        AGE
+coredns-64897985d-jdhw2       1/1     Running   0               5m19s
+etcd-k8s                      1/1     Running   0               5m31s
+kube-apiserver-k8s            1/1     Running   0               5m31s
+kube-controller-manager-k8s   1/1     Running   0               5m31s
+kube-proxy-j5mv7              1/1     Running   0               5m19s
+kube-scheduler-k8s            1/1     Running   0               5m31s
+storage-provisioner           1/1     Running   1 (4m41s ago)   5m23s
+```
+
+---
+---
+  
 ## Задача 2: Запуск Hello World
 После установки Minikube требуется его проверить. Для этого подойдет стандартное приложение hello world. А для доступа к нему потребуется ingress.
 
