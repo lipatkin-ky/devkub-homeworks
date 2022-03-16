@@ -13,6 +13,7 @@
  * наличие deployment можно проверить командой kubectl get deployment
  * наличие подов можно проверить командой kubectl get pods
 ---
+xxx
 
 ---
 ---
@@ -25,6 +26,7 @@
  * пользователь прописан в локальный конфиг (~/.kube/config, блок users)
  * пользователь может просматривать логи подов и их конфигурацию (kubectl logs pod <pod_id>, kubectl describe pod <pod_id>)
 ---
+xxx
 
 ---
 ---
@@ -35,6 +37,7 @@
  * в deployment из задания 1 изменено количество реплик на 5
  * проверить что все поды перешли в статус running (kubectl get pods)
 ---
+xxx
 
 ---
 ---
