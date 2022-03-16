@@ -16,6 +16,6 @@
 
 12.3. [Развертывание кластера на собственных серверах, лекция 1](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/12-kubernetes-03-install-part-1.md)
 
-12.4. [Развертывание кластера на собственных серверах, лекция 2](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/12-kubernetes-04-install-part-12.md)
+12.4. [Развертывание кластера на собственных серверах, лекция 2](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/12-kubernetes-04-install-part-2.md)
 
 12.5. [Сетевые решения CNI](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/12-kubernetes-05-cni.md)
