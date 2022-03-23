@@ -13,8 +13,97 @@
  * наличие deployment можно проверить командой kubectl get deployment
  * наличие подов можно проверить командой kubectl get pods
 ---
-xxx
-
+```
+root@k8s-01:~# kubectl apply -f https://k8s.io/examples/controllers/nginx-deployment.yaml
+deployment.apps/nginx-deployment created
+```
+```
+root@k8s-01:~# kubectl get deployments
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deployment   0/3     3            0           8s
+```
+```
+root@k8s-01:~# kubectl get deployments
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deployment   3/3     3            3           16s
+```
+```
+root@k8s-01:~# kubectl get pods
+NAME                               READY   STATUS    RESTARTS   AGE
+nginx-deployment-9456bbbf9-7drqx   1/1     Running   0          3m19s
+nginx-deployment-9456bbbf9-dnwn4   1/1     Running   0          3m19s
+nginx-deployment-9456bbbf9-kfwlp   1/1     Running   0          3m19s
+```
+```
+root@k8s-01:~# kubectl edit deployments.apps
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"nginx"},"name":"nginx-deployment","namespace":"default"},"spec":{"replicas":3,"selector":{"matchLabels":{"app":"
+nginx"}},"template":{"metadata":{"labels":{"app":"nginx"}},"spec":{"containers":[{"image":"nginx:1.14.2","name":"nginx","ports":[{"containerPort":80}]}]}}}}
+  creationTimestamp: "2022-03-23T19:37:08Z"
+  generation: 1
+  labels:
+    app: nginx
+  name: nginx-deployment
+  namespace: default
+  resourceVersion: "16462"
+  uid: 0d42b585-f1a6-423b-8262-7e37268bcfae
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: nginx
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx:1.14.2
+        imagePullPolicy: IfNotPresent
+        name: nginx
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+"/tmp/kubectl-edit-1283599483.yaml" 71L, 2295C written                                                                                                                              
+deployment.apps/nginx-deployment edited
+```
+```
+root@k8s-01:~# kubectl get pods
+NAME                               READY   STATUS    RESTARTS   AGE
+nginx-deployment-9456bbbf9-7drqx   1/1     Running   0          13m
+nginx-deployment-9456bbbf9-kfwlp   1/1     Running   0          13m
+```  
+```
+root@k8s-01:~# kubectl get deployments
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deployment   2/2     2            2           13m
+```
 ---
 ---
 ## Задание 2: Просмотр логов для разработки
