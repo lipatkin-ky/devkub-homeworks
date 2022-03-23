@@ -22,7 +22,16 @@
 | epdseclp0oav0msourf3 | k8s-01 | ru-central1-b | RUNNING | 51.250.104.217 | 10.129.0.12 |
 +----------------------+--------+---------------+---------+----------------+-------------+
 ```
-CRI — containerd на данный момент используется по-умолчанию.
+#### CRI — containerd на данный момент используется по-умолчанию.
+#### k8s_cluster.yml
+```
+container_manager: containerd
+```
+
+#### etcd.yml 
+```
+etcd_deployment_type: host 
+```
 ```
  kubespray % cat inventory/netology-new/inventory.ini                                 
 # ## Configure 'ip' variable to bind kubernetes services on a
