@@ -104,15 +104,15 @@ Welcome to Ubuntu 20.04.3 LTS (GNU/Linux 5.4.0-96-generic x86_64)
 Last login: Wed Mar 23 17:40:33 2022 from 91.x.x.x
 ```
 ```
+@k8s-01:~$ sudo -i
+```
+```
 root@k8s-01:~# kubectl version
 Client Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.5", GitCommit:"c285e781331a3785a7f436042c65c5641ce8a9e9", GitTreeState:"clean", BuildDate:"2022-03-16T15:58:47Z", GoVersion:"go1.17.8", Compiler:"gc", Platform:"linux/amd64"}
 Server Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.5", GitCommit:"c285e781331a3785a7f436042c65c5641ce8a9e9", GitTreeState:"clean", BuildDate:"2022-03-16T15:52:18Z", GoVersion:"go1.17.8", Compiler:"gc", Platform:"linux/amd64"}
 ```
 ```
-@k8s-01:~$ sudo -i
-```
-```
-@k8s-01:~# kubectl get nodes
+root@k8s-01:~# kubectl get nodes
 NAME     STATUS   ROLES                  AGE     VERSION
 k8s-01   Ready    control-plane,master   7m23s   v1.23.5
 k8s-02   Ready    <none>                 5m54s   v1.23.5
