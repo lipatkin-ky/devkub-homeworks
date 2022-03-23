@@ -27,7 +27,6 @@
 ```
 container_manager: containerd
 ```
-
 #### etcd.yml 
 ```
 etcd_deployment_type: host 
