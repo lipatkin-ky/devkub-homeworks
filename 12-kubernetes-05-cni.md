@@ -82,6 +82,28 @@ Praqma Network MultiTool (with NGINX) - cache-b4f65b647-78cnw - 10.233.77.3
 root@k8s-01:/tmp# kubectl exec backend-f785447b9-b6dxn -- curl -s -m 1 backend
 Praqma Network MultiTool (with NGINX) - backend-f785447b9-b6dxn - 10.233.82.3
 ```
+```
+root@k8s-01:/tmp# cat network-policy/default.yaml 
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+```
+```
+root@k8s-01:/tmp# kubectl exec backend-f785447b9-b6dxn -- curl -s -m 1 frontend
+command terminated with exit code 28
+root@k8s-01:/tmp# kubectl exec backend-f785447b9-b6dxn -- curl -s -m 1 cache
+command terminated with exit code 28
+root@k8s-01:/tmp# kubectl exec backend-f785447b9-b6dxn -- curl -s -m 1 backend
+command terminated with exit code 28
+```
+
+
+
 ---
 ---
 ## Задание 2: изучить, что запущено по умолчанию
