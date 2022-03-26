@@ -101,9 +101,39 @@ command terminated with exit code 28
 root@k8s-01:/tmp# kubectl exec backend-f785447b9-b6dxn -- curl -s -m 1 backend
 command terminated with exit code 28
 ```
-
-
-
+#### Разрешаю backend-у только к frontend-у
+```
+root@k8s-01:/tmp# cat network-policy/back.yaml 
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backend
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: frontend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            app: backend
+      ports:
+        - protocol: TCP
+          port: 80
+        - protocol: TCP
+          port: 443
+```
+```
+root@k8s-01:/tmp# kubectl exec backend-f785447b9-b6dxn -- curl -s -m 1 frontend
+Praqma Network MultiTool (with NGINX) - frontend-8645d9cb9c-nd2qm - 10.233.87.5
+root@k8s-01:/tmp# kubectl exec backend-f785447b9-b6dxn -- curl -s -m 1 cache
+command terminated with exit code 28
+root@k8s-01:/tmp# kubectl exec backend-f785447b9-b6dxn -- curl -s -m 1 backend
+command terminated with exit code 28
+```
 ---
 ---
 ## Задание 2: изучить, что запущено по умолчанию
