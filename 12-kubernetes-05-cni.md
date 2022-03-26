@@ -82,6 +82,7 @@ Praqma Network MultiTool (with NGINX) - cache-b4f65b647-78cnw - 10.233.77.3
 root@k8s-01:/tmp# kubectl exec backend-f785447b9-b6dxn -- curl -s -m 1 backend
 Praqma Network MultiTool (with NGINX) - backend-f785447b9-b6dxn - 10.233.82.3
 ```
+#### Запрещаю всё
 ```
 root@k8s-01:/tmp# cat network-policy/default.yaml 
 apiVersion: networking.k8s.io/v1
