@@ -8,7 +8,80 @@
 * установка производится через ansible/kubespray;
 * после применения следует настроить политику доступа к hello-world извне. Инструкции [kubernetes.io](https://kubernetes.io/docs/concepts/services-networking/network-policies/), [Calico](https://docs.projectcalico.org/about/about-network-policy)
 ---
-xxx
+```
+root@k8s-01:/tmp/main# ls -l
+total 12
+-rw-r--r-- 1 root root 600 Mar 26 10:09 back.yaml
+-rw-r--r-- 1 root root 600 Mar 26 10:09 cache.yaml
+-rw-r--r-- 1 root root 600 Mar 26 10:09 front.yaml
+```
+```
+root@k8s-01:/tmp# cat main/back.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: backend
+  name: backend
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - image: praqma/network-multitool:alpine-extra
+          imagePullPolicy: IfNotPresent
+          name: network-multitool
+      terminationGracePeriodSeconds: 30
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: default
+spec:
+  ports:
+    - name: web
+      port: 80
+  selector:
+    app: backend
+```
+```
+root@k8s-01:/tmp# kubectl apply -f main/
+deployment.apps/backend created
+service/backend created
+deployment.apps/cache created
+service/cache created
+deployment.apps/frontend created
+service/frontend created
+```
+```
+root@k8s-01:/tmp# kubectl get pod
+NAME                               READY   STATUS    RESTARTS      AGE
+backend-f785447b9-b6dxn            1/1     Running   0             15s
+cache-b4f65b647-78cnw              1/1     Running   0             15s
+frontend-8645d9cb9c-nd2qm          1/1     Running   0             15s
+nginx-deployment-9456bbbf9-7drqx   1/1     Running   1 (17h ago)   2d14h
+nginx-deployment-9456bbbf9-djjr7   1/1     Running   1 (17h ago)   2d13h
+nginx-deployment-9456bbbf9-f7lfr   1/1     Running   1 (17h ago)   2d13h
+nginx-deployment-9456bbbf9-kfwlp   1/1     Running   1 (17h ago)   2d14h
+nginx-deployment-9456bbbf9-vfqvq   1/1     Running   1 (17h ago)   2d13h
+```
+```
+root@k8s-01:/tmp# kubectl exec backend-f785447b9-b6dxn -- curl -s -m 1 frontend
+Praqma Network MultiTool (with NGINX) - frontend-8645d9cb9c-nd2qm - 10.233.87.5
+root@k8s-01:/tmp# kubectl exec backend-f785447b9-b6dxn -- curl -s -m 1 cache
+Praqma Network MultiTool (with NGINX) - cache-b4f65b647-78cnw - 10.233.77.3
+root@k8s-01:/tmp# kubectl exec backend-f785447b9-b6dxn -- curl -s -m 1 backend
+Praqma Network MultiTool (with NGINX) - backend-f785447b9-b6dxn - 10.233.82.3
+```
 ---
 ---
 ## Задание 2: изучить, что запущено по умолчанию
