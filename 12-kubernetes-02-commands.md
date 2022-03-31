@@ -115,7 +115,87 @@ nginx-deployment   2/2     2            2           13m
  * пользователь прописан в локальный конфиг (~/.kube/config, блок users)
  * пользователь может просматривать логи подов и их конфигурацию (kubectl logs pod <pod_id>, kubectl describe pod <pod_id>)
 ---
-xxx
+#### 1. Создаю app-namespace
+```
+root@k8s-01:~# kubectl create namespace app-namespace
+namespace/app-namespace created
+```
+```
+root@k8s-01:~# kubectl get namespaces
+NAME              STATUS   AGE
+app-namespace     Active   3s
+default           Active   7d18h
+kube-node-lease   Active   7d18h
+kube-public       Active   7d18h
+kube-system       Active   7d18h
+```
+#### 2. Создаю УЗ службы в app-namespace
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: test
+  namespace: app-namespace
+EOF
+```
+```
+root@k8s-01:~# cat <<EOF | kubectl apply -f -
+> apiVersion: v1
+> kind: ServiceAccount
+> metadata:
+>   name: test
+>   namespace: app-namespace
+> EOF
+
+
+serviceaccount/test created
+```
+```
+root@k8s-01:~# kubectl get serviceaccounts -n app-namespace
+NAME      SECRETS   AGE
+default   1         57m
+test      1         56m
+```
+#### 3. Создаю роль
+```
+cat <<EOF | kubectl apply -f -
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: viewer
+  namespace: app-namespace
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch", “logs”, "describe"]
+EOF
+```
+```
+root@k8s-01:~# cat <<EOF | kubectl apply -f -
+> kind: Role
+> apiVersion: rbac.authorization.k8s.io/v1
+> metadata:
+>   name: viewer
+>   namespace: app-namespace
+> rules:
+> - apiGroups: [""]
+>   resources: ["pods"]
+>   verbs: ["get", "list", "watch", “logs”, "describe"]
+> EOF
+
+role.rbac.authorization.k8s.io/viewer created
+```
+```
+root@k8s-01:~# kubectl get roles -n app-namespace
+NAME                      CREATED AT
+admin                     2022-03-31T12:38:24Z
+viewer                    2022-03-31T12:54:36Z
+```
+
+
+
+
 
 ---
 ---
