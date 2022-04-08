@@ -7,6 +7,58 @@
 
 В конце установки будет выдан пример создания PVC для этого сервера.
 
+---
+```
+root@k8s-01:~# curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 11156  100 11156    0     0  25645      0 --:--:-- --:--:-- --:--:-- 25587
+Downloading https://get.helm.sh/helm-v3.8.1-linux-amd64.tar.gz
+Verifying checksum... Done.
+Preparing to install helm into /usr/local/bin
+helm installed into /usr/local/bin/helm
+```
+```
+root@k8s-01:~# helm repo add stable https://charts.helm.sh/stable && helm repo update
+"stable" has been added to your repositories
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "stable" chart repository
+Update Complete. ⎈Happy Helming!⎈
+```
+```
+root@k8s-01:~# helm install nfs-server stable/nfs-server-provisioner
+WARNING: This chart is deprecated
+NAME: nfs-server
+LAST DEPLOYED: Fri Apr  8 13:04:52 2022
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+The NFS Provisioner service has now been installed.
+
+A storage class named 'nfs' has now been created
+and is available to provision dynamic volumes.
+
+You can use this storageclass by creating a `PersistentVolumeClaim` with the
+correct storageClassName attribute. For example:
+
+    ---
+    kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: test-dynamic-volume-claim
+    spec:
+      storageClassName: "nfs"
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+```
+---
+---
+
 ## Задание 1: подключить для тестового конфига общую папку
 В stage окружении часто возникает необходимость отдавать статику бекенда сразу фронтом. Проще всего сделать это через общую папку. Требования:
 * в поде подключена общая папка между контейнерами (например, /static);
