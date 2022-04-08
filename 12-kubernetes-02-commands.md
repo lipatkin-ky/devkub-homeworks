@@ -192,6 +192,49 @@ NAME                      CREATED AT
 admin                     2022-03-31T12:38:24Z
 viewer                    2022-03-31T12:54:36Z
 ```
+#### 4. Привязываю роль к пользователю
+```
+cat <<EOF | kubectl apply -f -
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: role-viewer
+  namespace: app-namespace
+subjects:
+- kind: ServiceAccount
+  name: test
+  namespace: app-namespace
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: view
+EOF
+```
+```
+root@k8s-01:~# cat <<EOF | kubectl apply -f -
+> kind: RoleBinding
+> apiVersion: rbac.authorization.k8s.io/v1
+> metadata:
+>   name: role-viewer
+>   namespace: app-namespace
+> subjects:
+> - kind: ServiceAccount
+>   name: test
+>   namespace: app-namespace
+> roleRef:
+>   apiGroup: rbac.authorization.k8s.io
+>   kind: Role
+>   name: view
+> EOF
+
+rolebinding.rbac.authorization.k8s.io/role-viewer created
+```
+```
+root@k8s-01:~# kubectl get rolebindings --namespace app-namespace
+NAME          ROLE        AGE
+role-viewer   Role/view   7s
+```
+
 
 
 
