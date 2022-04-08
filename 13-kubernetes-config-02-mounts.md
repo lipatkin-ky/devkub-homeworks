@@ -64,6 +64,102 @@ correct storageClassName attribute. For example:
 * в поде подключена общая папка между контейнерами (например, /static);
 * после записи чего-либо в контейнере с беком файлы можно получить из контейнера с фронтом.
 
+---
+#### Запускаю Pod в следующей конфигурации
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-int-volumes
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+      volumeMounts:
+        - mountPath: "/static"
+          name: static
+    - name: busybox
+      image: busybox
+      command: ["sleep", "3600"]
+      volumeMounts:
+        - mountPath: "/tmp/cache"
+          name: static
+  volumes:
+    - name: static
+      emptyDir: {}
+EOF
+```
+```
+root@k8s-01:~# cat <<EOF | kubectl apply -f -
+> apiVersion: v1
+> kind: Pod
+> metadata:
+>   name: pod-int-volumes
+> spec:
+>   containers:
+>     - name: nginx
+>       image: nginx
+>       volumeMounts:
+>         - mountPath: "/static"
+>           name: static
+>     - name: busybox
+>       image: busybox
+>       command: ["sleep", "3600"]
+>       volumeMounts:
+>         - mountPath: "/tmp/cache"
+>           name: static
+>   volumes:
+>     - name: static
+>       emptyDir: {}
+> EOF
+pod/pod-int-volumes created
+```
+```
+root@k8s-01:~# kubectl get pods
+NAME                                  READY   STATUS    RESTARTS       AGE
+multitool-587cc865-wqdlv              2/2     Running   2 (56m ago)    2d21h
+multitool-587cc865-xs5dx              2/2     Running   2 (2d8h ago)   2d21h
+multitool-587cc865-zrk7q              2/2     Running   2 (56m ago)    2d21h
+nfs-server-nfs-server-provisioner-0   1/1     Running   0              53m
+pod-int-volumes                       2/2     Running   0              43s
+```
+#### Проверяю наличие файлов
+```
+root@k8s-01:~# kubectl exec pod-int-volumes -c busybox -- ls -la /tmp/cache
+total 8
+drwxrwxrwx    2 root     root          4096 Apr  8 14:08 .
+drwxrwxrwt    1 root     root          4096 Apr  8 13:57 ..
+root@k8s-01:~#
+root@k8s-01:~# kubectl exec pod-int-volumes -c nginx -- ls -la /static
+total 8
+drwxrwxrwx 2 root root 4096 Apr  8 14:08 .
+drwxr-xr-x 1 root root 4096 Apr  8 13:57 ..
+```
+#### Записываю в контейнер "busybox" и проверяю наличие файлов
+```
+root@k8s-01:~# kubectl exec pod-int-volumes -c busybox -- sh -c 'echo "test" > /tmp/cache/test.txt'
+root@k8s-01:~#
+root@k8s-01:~# kubectl exec pod-int-volumes -c busybox -- ls -la /tmp/cache
+total 12
+drwxrwxrwx    2 root     root          4096 Apr  8 14:10 .
+drwxrwxrwt    1 root     root          4096 Apr  8 13:57 ..
+-rw-r--r--    1 root     root             5 Apr  8 14:10 test.txt
+root@k8s-01:~# 
+root@k8s-01:~# kubectl exec pod-int-volumes -c nginx -- ls -la /static
+total 12
+drwxrwxrwx 2 root root 4096 Apr  8 14:10 .
+drwxr-xr-x 1 root root 4096 Apr  8 13:57 ..
+-rw-r--r-- 1 root root    5 Apr  8 14:10 test.txt
+```
+#### Читаю в контейнере "nginx"
+```
+root@k8s-01:~# kubectl exec pod-int-volumes -c nginx -- sh -c 'cat /static/test.txt'
+test
+```
+---
+---
+
 ## Задание 2: подключить общую папку для прода
 Поработав на stage, доработки нужно отправить на прод. В продуктиве у нас контейнеры крутятся в разных подах, поэтому потребуется PV и связь через PVC. Сам PV должен быть связан с NFS сервером. Требования:
 * все бекенды подключаются к одному PV в режиме ReadWriteMany;
