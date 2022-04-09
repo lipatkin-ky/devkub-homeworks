@@ -231,6 +231,7 @@ deployment.apps/frontend-backend created
 statefulset.apps/postgresql-db created
 service/postgresql-db created
 ```
+#### Смотрю, что вышло
 ```
 root@k8s-01:~# kubectl get deployments.apps -n stage 
 NAME               READY   UP-TO-DATE   AVAILABLE   AGE
@@ -257,6 +258,104 @@ postgresql-db   ClusterIP   10.233.54.47   <none>        5432/TCP   9m5s
 * для связи используются service (у каждого компонента свой);
 * в окружении фронта прописан адрес сервиса бекенда;
 * в окружении бекенда прописан адрес сервиса базы данных.
+
+---
+#### Применяю конфигурации:
+
+#### - Front
+```
+cat <<EOF | kubectl apply -f -
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: myapp-front
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-front
+  template:
+    metadata:
+      labels:
+        app: myapp-front
+    spec:
+      containers:
+        - image: constantinelipatkin/frontend:13.1
+          name: frontend
+          ports:
+            - containerPort: 8000
+          env:
+            - name: BASE_URL
+              value: http://backend:9000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  selector:
+    app: myapp-front
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8000
+EOF
+```
+```
+root@k8s-01:~# cat <<EOF | kubectl apply -f -
+> ---
+> apiVersion: apps/v1
+> kind: Deployment
+> metadata:
+>   labels:
+>     app: myapp-front
+>   name: frontend
+> spec:
+>   replicas: 1
+>   selector:
+>     matchLabels:
+>       app: myapp-front
+>   template:
+>     metadata:
+>       labels:
+>         app: myapp-front
+>     spec:
+>       containers:
+>         - image: constantinelipatkin/frontend:13.1
+>           name: frontend
+>           ports:
+>             - containerPort: 8000
+>           env:
+>             - name: BASE_URL
+>               value: http://backend:9000
+> ---
+> apiVersion: v1
+> kind: Service
+> metadata:
+>   name: frontend
+> spec:
+>   selector:
+>     app: myapp-front
+>   ports:
+>     - protocol: TCP
+>       port: 8080
+>       targetPort: 8000
+> EOF
+deployment.apps/frontend created
+service/frontend created
+```
+#### - Prod
+
+
+
+
+
+#### - DB
+---
+---
 
 ## Задание 3 (*): добавить endpoint на внешний ресурс api
 Приложению потребовалось внешнее api, и для его использования лучше добавить endpoint в кластер, направленный на это api. Требования:
