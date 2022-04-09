@@ -72,11 +72,6 @@ dad95716bb70: Mounted from library/python
 7362f7f77851: Mounted from library/python 
 13.1: digest: sha256:9e9d9b710051ebeefae5ac00b13b6bc8df32a0882abc2aaaa99cb798f9426bd6 size: 3469
 ```
-
-
-
-
-
 ---
 ---
 
@@ -85,6 +80,176 @@ dad95716bb70: Mounted from library/python
 * под содержит в себе 2 контейнера — фронтенд, бекенд;
 * регулируется с помощью deployment фронтенд и бекенд;
 * база данных — через statefulset.
+
+---
+#### Создаю пространство имен "stage"
+```
+root@k8s-01:~# kubectl create namespace stage
+namespace/stage created
+```
+#### Применяю конфигурацию
+```
+cat <<EOF | kubectl apply -f - -n stage
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: myapp
+  name: frontend-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - image: constantinelipatkin/frontend:13.1
+        name: frontend
+        ports:
+        - containerPort: 80
+      - image: constantinelipatkin/backend:13.1
+        name: backend
+        ports:
+        - containerPort: 9000
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgresql-db
+spec:
+  serviceName: “postgresql-db”
+  selector:
+    matchLabels:
+      app: postgresql-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgresql-db
+    spec:
+      containers:
+      - name: postgresql-db
+        image: postgres:13-alpine
+        ports:
+        - containerPort: 5432
+        env:
+          - name: POSTGRES_DB
+            value: news
+          - name: POSTGRES_PASSWORD
+            value: postgres
+          - name: POSTGRES_USER
+            value: postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql-db
+spec:
+  selector:
+    app: postgresql-db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+EOF
+```
+```
+root@k8s-01:~# cat <<EOF | kubectl apply -f - -n stage
+> ---
+> apiVersion: apps/v1
+> kind: Deployment
+> metadata:
+>   labels:
+>     app: myapp
+>   name: frontend-backend
+> spec:
+>   replicas: 1
+>   selector:
+>     matchLabels:
+>       app: myapp
+>   template:
+>     metadata:
+>       labels:
+>         app: myapp
+>     spec:
+>       containers:
+>       - image: constantinelipatkin/frontend:13.1
+>         name: frontend
+>         ports:
+>         - containerPort: 80
+>       - image: constantinelipatkin/backend:13.1
+>         name: backend
+>         ports:
+>         - containerPort: 9000
+> ---
+> apiVersion: apps/v1
+> kind: StatefulSet
+> metadata:
+>   name: postgresql-db
+> spec:
+>   serviceName: “postgresql-db”
+>   selector:
+>     matchLabels:
+>       app: postgresql-db
+>   replicas: 1
+>   template:
+>     metadata:
+>       labels:
+>         app: postgresql-db
+>     spec:
+>       containers:
+>       - name: postgresql-db
+>         image: postgres:13-alpine
+>         ports:
+>         - containerPort: 5432
+>         env:
+>           - name: POSTGRES_DB
+>             value: news
+>           - name: POSTGRES_PASSWORD
+>             value: postgres
+>           - name: POSTGRES_USER
+>             value: postgres
+> ---
+> apiVersion: v1
+> kind: Service
+> metadata:
+>   name: postgresql-db
+> spec:
+>   selector:
+>     app: postgresql-db
+>   ports:
+>     - protocol: TCP
+>       port: 5432
+>       targetPort: 5432
+> EOF
+deployment.apps/frontend-backend created
+statefulset.apps/postgresql-db created
+service/postgresql-db created
+```
+```
+root@k8s-01:~# kubectl get deployments.apps -n stage 
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+frontend-backend   1/1     1            1           7m42s
+root@k8s-01:~# 
+root@k8s-01:~# kubectl get statefulsets.apps -n stage 
+NAME            READY   AGE
+postgresql-db   1/1     8m2s
+root@k8s-01:~# 
+root@k8s-01:~# kubectl get pods -n stage 
+NAME                               READY   STATUS    RESTARTS   AGE
+frontend-backend-8f87f56df-xkgn5   2/2     Running   0          8m40s
+root@k8s-01:~# 
+root@k8s-01:~#kubectl get service -n stage 
+NAME            TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+postgresql-db   ClusterIP   10.233.54.47   <none>        5432/TCP   9m5s
+```
+---
+---
 
 ## Задание 2: подготовить конфиг для production окружения
 Следующим шагом будет запуск приложения в production окружении. Требования сложнее:
