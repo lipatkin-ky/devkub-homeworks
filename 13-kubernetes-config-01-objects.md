@@ -1,6 +1,85 @@
 # Домашнее задание к занятию "13.1 контейнеры, поды, deployment, statefulset, services, endpoints"
 Настроив кластер, подготовьте приложение к запуску в нём. Приложение стандартное: бекенд, фронтенд, база данных. Его можно найти в папке 13-kubernetes-config.
 
+---
+#### Сборка
+```
+% docker-compose up --build
+Building frontend
+[+] Building 95.2s (20/20) FINISHED  
+...
+...
+[+] Building 32.1s (12/12) FINISHED
+...
+...
+Creating 13-kubernetes-config_frontend_1 ... done
+Creating 13-kubernetes-config_db_1       ... done
+Creating 13-kubernetes-config_backend_1  ... done
+...
+...
+```
+#### Просматриваю наличие образов
+```
+% docker images
+REPOSITORY                      TAG         IMAGE ID       CREATED         SIZE
+13-kubernetes-config_backend    latest      7b173917cdb5   3 minutes ago   1.07GB
+13-kubernetes-config_frontend   latest      4b86ba5f6609   3 minutes ago   142MB
+postgres                        13-alpine   928a7a35a1ad   3 days ago      207MB
+docker/getting-started          latest      bd9a9f733898   8 weeks ago     28.8MB
+```
+#### Подготовка к отправке на Docker-HUB
+```
+% docker tag 13-kubernetes-config_backend:latest constantinelipatkin/backend:13.1
+% docker tag 13-kubernetes-config_frontend:latest constantinelipatkin/frontend:13.1
+%
+% docker images | grep 13.1
+constantinelipatkin/backend     13.1        7b173917cdb5   17 hours ago   1.07GB
+constantinelipatkin/frontend    13.1        4b86ba5f6609   17 hours ago   142MB
+```
+#### Отправляю на Docker-HUB
+```
+% docker push constantinelipatkin/frontend:13.1
+The push refers to repository [docker.io/constantinelipatkin/frontend]
+e2ecd25639c1: Layer already exists 
+bcb7ae696b7a: Layer already exists 
+7a68866d30a9: Layer already exists 
+5f70bf18a086: Layer already exists 
+8f8614974cd6: Layer already exists 
+ea4bc0cd4a93: Layer already exists 
+fac199a5a1a5: Layer already exists 
+5c77d760e1f4: Layer already exists 
+33cf1b723f65: Layer already exists 
+ea207a4854e7: Layer already exists 
+608f3a074261: Layer already exists 
+13.1: digest: sha256:b4a53c446d1a6b3959e171b0f40b8885c8521e32757ddc20d73933ba488f3252 size: 2607
+%
+% docker push constantinelipatkin/backend:13.1 
+The push refers to repository [docker.io/constantinelipatkin/backend]
+ffed9d1f13d8: Pushed 
+db8e7736ad9e: Pushed 
+a5966831f642: Pushed 
+d1eeb5662d1b: Pushed 
+5f70bf18a086: Mounted from constantinelipatkin/frontend 
+99605b51636a: Pushed 
+4c9efc7d50b2: Mounted from library/python 
+5fffd512537b: Mounted from library/python 
+fef7b0285d08: Mounted from library/python 
+dad95716bb70: Mounted from library/python 
+627d03f17169: Mounted from library/python 
+6b9b07bf46f5: Mounted from library/python 
+88139fe969ab: Mounted from library/python 
+83f556e4c108: Mounted from library/python 
+7362f7f77851: Mounted from library/python 
+13.1: digest: sha256:9e9d9b710051ebeefae5ac00b13b6bc8df32a0882abc2aaaa99cb798f9426bd6 size: 3469
+```
+
+
+
+
+
+---
+---
+
 ## Задание 1: подготовить тестовый конфиг для запуска приложения
 Для начала следует подготовить запуск приложения в stage окружении с простыми настройками. Требования:
 * под содержит в себе 2 контейнера — фронтенд, бекенд;
