@@ -26,11 +26,11 @@
 
 13.2. [ + ] [Разделы и монтирование](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/13-kubernetes-config-02-mounts.md)
 
-13.3. [-] [Работа c Kubectl](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/13-kubernetes-config-03-kubectl.md)
+13.3. [ - ] [Работа c Kubectl](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/13-kubernetes-config-03-kubectl.md)
 
-13.4. [-] [Инструменты для упрощения написания конфигурационных файлов. Helm и Jsonnet](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/13-kubernetes-config-04-helm.md)
+13.4. [ - ] [Инструменты для упрощения написания конфигурационных файлов. Helm и Jsonnet](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/13-kubernetes-config-04-helm.md)
 
-13.5. [-] [Поддержка нескольких окружений на примере Qbec](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/13-kubernetes-config-05-qbec.md)
+13.5. [ - ] [Поддержка нескольких окружений на примере Qbec](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/13-kubernetes-config-05-qbec.md)
 
 
 ## Дополнительные материалы
@@ -38,3 +38,8 @@
 [Модуль 11. Микросервисная архитектура](https://github.com/netology-code/devkub-homeworks/tree/main/11-microservices-02-principles)
 
 [Модуль 13. Пример приложения для упаковки и запуска в Kubernetes](https://github.com/netology-code/devkub-homeworks/tree/main/13-kubernetes-config)
+
+P.S.
+[ - ] Работа не сдана на проверку
+[ + ] Работа сдана на проверку
+[ X ] Работа выполнена и проверена (Зачёт)
