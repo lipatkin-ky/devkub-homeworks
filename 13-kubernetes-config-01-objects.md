@@ -348,12 +348,181 @@ deployment.apps/frontend created
 service/frontend created
 ```
 #### - Prod
-
-
-
-
-
+```
+cat <<EOF | kubectl apply -f -
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: myapp-back
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-back
+  template:
+    metadata:
+      labels:
+        app: myapp-back
+    spec:
+      containers:
+      - image: constantinelipatkin/backend:13.1
+        name: backend 
+        ports: 
+          - containerPort: 9000
+        env:
+        - name: DATABASE_URL
+          value: postgres://postgres:postgres@postgresql:5432/news
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: backend
+spec:
+  selector:
+    app: myapp-back
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+EOF
+```
+```
+root@k8s-01:~# cat <<EOF | kubectl apply -f -
+> ---
+> apiVersion: apps/v1
+> kind: Deployment
+> metadata:
+>   labels:
+>     app: myapp-back
+>   name: backend
+> spec:
+>   replicas: 1
+>   selector:
+>     matchLabels:
+>       app: myapp-back
+>   template:
+>     metadata:
+>       labels:
+>         app: myapp-back
+>     spec:
+>       containers:
+>       - image: constantinelipatkin/backend:13.1
+>         name: backend 
+>         ports: 
+>           - containerPort: 9000
+>         env:
+>         - name: DATABASE_URL
+>           value: postgres://postgres:postgres@postgresql:5432/news
+> ---
+> apiVersion: v1
+> kind: Service
+> metadata:
+>     name: backend
+> spec:
+>   selector:
+>     app: myapp-back
+>   ports:
+>     - protocol: TCP
+>       port: 9000
+>       targetPort: 9000
+> EOF
+deployment.apps/backend created
+service/backend created
+```
 #### - DB
+```
+cat <<EOF | kubectl apply -f -
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql
+spec:
+  selector:
+    matchLabels:
+      app: myapp-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: myapp-db
+    spec:
+      containers:
+      - name: postgresql
+        image: postgres:13-alpine
+        ports:
+          - containerPort: 5432
+        env:
+          - name: POSTGRES_DB
+            value: news
+          - name: POSTGRES_PASSWORD
+            value: postgres
+          - name: POSTGRES_USER
+            value: postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql
+spec:
+  selector:
+    app: myapp-db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+EOF
+```
+```
+root@k8s-01:~# cat <<EOF | kubectl apply -f -
+> ---
+> apiVersion: apps/v1
+> kind: Deployment
+> metadata:
+>   name: postgresql
+> spec:
+>   selector:
+>     matchLabels:
+>       app: myapp-db
+>   replicas: 1
+>   template:
+>     metadata:
+>       labels:
+>         app: myapp-db
+>     spec:
+>       containers:
+>       - name: postgresql
+>         image: postgres:13-alpine
+>         ports:
+>           - containerPort: 5432
+>         env:
+>           - name: POSTGRES_DB
+>             value: news
+>           - name: POSTGRES_PASSWORD
+>             value: postgres
+>           - name: POSTGRES_USER
+>             value: postgres
+> ---
+> apiVersion: v1
+> kind: Service
+> metadata:
+>   name: postgresql
+> spec:
+>   selector:
+>     app: myapp-db
+>   ports:
+>     - protocol: TCP
+>       port: 5432
+>       targetPort: 5432
+> EOF
+deployment.apps/postgresql created
+service/postgresql created
+```
+
+
 ---
 ---
 
