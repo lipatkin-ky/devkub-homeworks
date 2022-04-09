@@ -521,6 +521,55 @@ root@k8s-01:~# cat <<EOF | kubectl apply -f -
 deployment.apps/postgresql created
 service/postgresql created
 ```
+#### Смотрю, что вышло
+```
+root@k8s-01:~# kubectl get all -o wide
+NAME                                      READY   STATUS    RESTARTS      AGE     IP             NODE     NOMINATED NODE   READINESS GATES
+pod/backend-6446b4dd4f-tpj75              1/1     Running   0             3m18s   10.233.87.53   k8s-03   <none>           <none>
+pod/frontend-c65db47f4-8mjgp              1/1     Running   0             8m10s   10.233.77.48   k8s-05   <none>           <none>
+pod/nfs-server-nfs-server-provisioner-0   1/1     Running   1 (10m ago)   16h     10.233.73.47   k8s-04   <none>           <none>
+pod/postgresql-7b95c45bf9-4l46j           1/1     Running   0             2m4s    10.233.82.46   k8s-02   <none>           <none>
+
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE     SELECTOR
+service/backend      ClusterIP   10.233.58.203   <none>        9000/TCP   3m18s   app=myapp-back
+service/frontend     ClusterIP   10.233.44.253   <none>        8080/TCP   8m10s   app=myapp-front
+service/kubernetes   ClusterIP   10.233.0.1      <none>        443/TCP    10m     <none>
+service/postgresql   ClusterIP   10.233.30.96    <none>        5432/TCP   2m4s    app=myapp-db
+
+NAME                         READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS   IMAGES                              SELECTOR
+deployment.apps/backend      1/1     1            1           3m18s   backend      constantinelipatkin/backend:13.1    app=myapp-back
+deployment.apps/frontend     1/1     1            1           8m10s   frontend     constantinelipatkin/frontend:13.1   app=myapp-front
+deployment.apps/postgresql   1/1     1            1           2m4s    postgresql   postgres:13-alpine                  app=myapp-db
+
+NAME                                    DESIRED   CURRENT   READY   AGE     CONTAINERS   IMAGES                              SELECTOR
+replicaset.apps/backend-6446b4dd4f      1         1         1       3m18s   backend      constantinelipatkin/backend:13.1    app=myapp-back,pod-template-hash=6446b4dd4f
+replicaset.apps/frontend-c65db47f4      1         1         1       8m10s   frontend     constantinelipatkin/frontend:13.1   app=myapp-front,pod-template-hash=c65db47f4
+replicaset.apps/postgresql-7b95c45bf9   1         1         1       2m4s    postgresql   postgres:13-alpine                  app=myapp-db,pod-template-hash=7b95c45bf9
+
+NAME                                                 READY   AGE   CONTAINERS               IMAGES
+statefulset.apps/nfs-server-nfs-server-provisioner   1/1     21h   nfs-server-provisioner   quay.io/kubernetes_incubator/nfs-provisioner:v2.3.0
+```
+```
+root@k8s-01:~# kubectl get deployments.apps 
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+backend      1/1     1            1           5m14s
+frontend     1/1     1            1           10m
+postgresql   1/1     1            1           4m
+root@k8s-01:~#
+root@k8s-01:~# kubectl get service
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+backend      ClusterIP   10.233.58.203   <none>        9000/TCP   5m46s
+frontend     ClusterIP   10.233.44.253   <none>        8080/TCP   10m
+kubernetes   ClusterIP   10.233.0.1      <none>        443/TCP    12m
+postgresql   ClusterIP   10.233.30.96    <none>        5432/TCP   4m32s
+root@k8s-01:~# 
+root@k8s-01:~# kubectl get pods
+NAME                                  READY   STATUS    RESTARTS      AGE
+backend-6446b4dd4f-tpj75              1/1     Running   0             6m2s
+frontend-c65db47f4-8mjgp              1/1     Running   0             10m
+nfs-server-nfs-server-provisioner-0   1/1     Running   1 (12m ago)   16h
+postgresql-7b95c45bf9-4l46j           1/1     Running   0             4m48s
+```
 
 
 ---
