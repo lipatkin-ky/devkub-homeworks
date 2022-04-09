@@ -40,6 +40,9 @@
 [Модуль 13. Пример приложения для упаковки и запуска в Kubernetes](https://github.com/netology-code/devkub-homeworks/tree/main/13-kubernetes-config)
 
 P.S.
+
 [ - ] Работа не сдана на проверку
+
 [ + ] Работа сдана на проверку
+
 [ X ] Работа выполнена и проверена (Зачёт)
