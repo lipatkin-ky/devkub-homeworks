@@ -570,8 +570,6 @@ frontend-c65db47f4-8mjgp              1/1     Running   0             10m
 nfs-server-nfs-server-provisioner-0   1/1     Running   1 (12m ago)   16h
 postgresql-7b95c45bf9-4l46j           1/1     Running   0             4m48s
 ```
-
-
 ---
 ---
 
