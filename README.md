@@ -24,7 +24,7 @@
 
 13.1. [ X ] [Контейнеры, поды, deployment, statefulset, services, endpoints](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/13-kubernetes-config-01-objects.md)
 
-13.2. [ + ] [Разделы и монтирование](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/13-kubernetes-config-02-mounts.md)
+13.2. [ X ] [Разделы и монтирование](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/13-kubernetes-config-02-mounts.md)
 
 13.3. [ - ] [Работа c Kubectl](https://github.com/lipatkin-ky/devkub-homeworks/blob/main/13-kubernetes-config-03-kubectl.md)
 
