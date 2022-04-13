@@ -78,6 +78,14 @@ root@k8s-01:~#
 
 #### Проделал еще несколько итераций и получил следующее:
 ```
+root@k8s-01:~# kubectl get pods -o wide 
+NAME                                  READY   STATUS    RESTARTS      AGE     IP             NODE     NOMINATED NODE   READINESS GATES
+backend-6847d9c8dd-hthph              1/1     Running   0             92s     10.233.77.88   k8s-05   <none>           <none>
+frontend-869dc8cff5-jpt96             1/1     Running   0             2m25s   10.233.87.75   k8s-03   <none>           <none>
+nfs-server-nfs-server-provisioner-0   1/1     Running   2 (68m ago)   5d2h    10.233.73.48   k8s-04   <none>           <none>
+postgresql-7b95c45bf9-nzzcz           1/1     Running   0             60m     10.233.87.58   k8s-03   <none>           <none>
+```
+```
 root@k8s-01:~# kubectl describe pods backend-6847d9c8dd-hthph frontend-869dc8cff5-jpt96 | grep k8s
 Node:         k8s-05/10.129.0.36
   Normal  Scheduled  2m23s  default-scheduler  Successfully assigned default/backend-6847d9c8dd-hthph to k8s-05
